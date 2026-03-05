@@ -1,0 +1,51 @@
+# Created by https://www.toptal.com/developers
+# Edit at https://www.toptal.com/developers
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables — NEVER commit
+.env
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.coveragerc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Alembic
+alembic/__pycache__/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Ai
+CLAUDE.md
+claude.md
