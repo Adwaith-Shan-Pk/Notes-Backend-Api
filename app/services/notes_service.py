@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
 from app.models.note import Note
-from app.schemas.note import NoteCreate
+from app.schemas.note import NoteCreate, NoteUpdate
 from app.core.exceptions import AppException
 
 
@@ -61,3 +61,24 @@ async def list_notes(
         "page": page,
         "total_pages": max(1, math.ceil(total / limit)),
     }
+
+
+async def update_note(
+    db: AsyncSession, note_id: UUID, data: NoteUpdate, user_id: UUID
+) -> Note:
+    note = await get_note_for_user(db, note_id, user_id)
+
+    if data.title is not None:
+        note.title = data.title
+    if data.content is not None:
+        note.content = data.content
+
+    await db.commit()
+    await db.refresh(note)
+    return note
+
+
+async def delete_note(db: AsyncSession, note_id: UUID, user_id: UUID) -> None:
+    note = await get_note_for_user(db, note_id, user_id)
+    await db.delete(note)
+    await db.commit()
