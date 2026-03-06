@@ -26,7 +26,7 @@ def create_access_token(data: dict) -> str:
     )
     payload.update({
         "exp": expire,
-        "jti": secrets.token_hex(8)  # unique ID per token
+        "jti": secrets.token_hex(8)
     })
     return jwt.encode(payload, settings.secret_key, algorithm=settings.algorithm)
 
