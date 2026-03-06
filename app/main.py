@@ -26,9 +26,24 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Notes Management API",
-    description="A REST API for managing personal notes with JWT auth and RBAC",
+    description=(
+        "A fully functional REST API for managing personal notes.\n\n"
+        "## Features\n"
+        "- **JWT Authentication** — register, login, refresh tokens\n"
+        "- **Personal Notes CRUD** — create, read, update, delete with ownership enforcement\n"
+        "- **Search & Pagination** — case-insensitive title search, sort, paginate\n"
+        "- **Role-Based Access Control** — admin endpoints for managing all notes and users\n\n"
+        "## Authentication\n"
+        "Use `POST /api/auth/login` to obtain a Bearer token, then click **Authorize** above."
+    ),
     version="1.0.0",
     lifespan=lifespan,
+    openapi_tags=[
+        {"name": "Authentication", "description": "Register, login, and refresh JWT tokens"},
+        {"name": "Notes", "description": "Create and manage your personal notes"},
+        {"name": "Admin", "description": "Admin-only endpoints — requires `admin` role"},
+        {"name": "Health", "description": "Service health check"},
+    ],
 )
 
 
