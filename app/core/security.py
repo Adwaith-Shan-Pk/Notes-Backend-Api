@@ -6,8 +6,6 @@ from jose import JWTError, ExpiredSignatureError, jwt
 from app.config import settings
 from app.core.exceptions import AppException
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
-
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(
