@@ -1,8 +1,8 @@
 import pytest
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.main import app
-from app.models.user import Base as UserBase
-from app.models.note import Base as NoteBase
+from app.database import Base
 from app.dependencies import get_db
 from httpx import AsyncClient, ASGITransport
 
@@ -12,7 +12,7 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 async def test_engine():
     engine = create_async_engine(TEST_DATABASE_URL, echo=False)
     async with engine.begin() as conn:
-        await conn.run_sync(UserBase.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
     yield engine
     await engine.dispose()
 
@@ -35,3 +35,11 @@ async def client(db_session):
     ) as ac:
         yield ac
     app.dependency_overrides.clear()
+
+@pytest.fixture(autouse=True)
+async def clean_db(db_session):
+    yield
+    await db_session.execute(text("DELETE FROM refresh_tokens"))
+    await db_session.execute(text("DELETE FROM notes"))
+    await db_session.execute(text("DELETE FROM users"))
+    await db_session.commit()
