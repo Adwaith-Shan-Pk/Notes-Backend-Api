@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import Optional
 
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,10 +25,15 @@ async def create_note(
 async def list_notes(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
+    search: Optional[str] = Query(None),
+    sort_by: str = Query("created_at"),
+    order: str = Query("desc"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await notes_service.list_notes(db, current_user.id, page, limit)
+    return await notes_service.list_notes(
+        db, current_user.id, page, limit, search, sort_by, order
+    )
 
 
 @router.get("/{note_id}", response_model=NoteResponse)

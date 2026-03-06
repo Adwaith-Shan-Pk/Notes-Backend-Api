@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import Optional
 
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,10 +17,13 @@ router = APIRouter()
 async def list_all_notes(
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
+    search: Optional[str] = Query(None),
+    sort_by: str = Query("created_at"),
+    order: str = Query("desc"),
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_admin),
 ):
-    return await admin_service.get_all_notes(db, page, limit)
+    return await admin_service.get_all_notes(db, page, limit, search, sort_by, order)
 
 
 @router.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -39,6 +43,5 @@ async def list_all_users(
     _: User = Depends(require_admin),
 ):
     result = await admin_service.get_all_users(db, page, limit)
-    # Serialize users through UserResponse to strip password_hash
     result["data"] = [UserResponse.model_validate(u) for u in result["data"]]
     return result
