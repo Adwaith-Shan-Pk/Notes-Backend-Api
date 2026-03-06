@@ -2,7 +2,6 @@ import secrets
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, ExpiredSignatureError, jwt
-from passlib.context import CryptContext
 
 from app.config import settings
 from app.core.exceptions import AppException
