@@ -135,8 +135,6 @@ class TestOwnershipEnforcement:
 
 
 class TestAdminCanDeleteAnyNote:
-
-class TestAdminCanDeleteAnyNote:
     async def test_regular_user_gets_403_on_admin_routes(self, client):
         user = await _register_and_login(client, "nonadmin@example.com")
         assert (await client.get("/api/admin/notes", headers=user["headers"])).status_code == 403
