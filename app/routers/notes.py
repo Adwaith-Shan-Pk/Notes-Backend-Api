@@ -94,4 +94,4 @@ async def delete_note(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    lawait notes_service.delete_note(db, note_id, current_user.id)
+    await notes_service.delete_note(db, note_id, current_user.id)

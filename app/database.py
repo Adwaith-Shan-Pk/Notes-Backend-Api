@@ -8,9 +8,8 @@ class Base(DeclarativeBase):
     pass
 
 
-
+"""postgresql always uses asyncpg driver"""
 def _get_async_url(url: str) -> str:
-    """Ensure the URL always uses the asyncpg driver, regardless of what's in .env / CI secret."""
     if url.startswith("postgresql://"):
         return url.replace("postgresql://", "postgresql+asyncpg://", 1)
     return url
