@@ -8,8 +8,16 @@ class Base(DeclarativeBase):
     pass
 
 
+
+def _get_async_url(url: str) -> str:
+    """Ensure the URL always uses the asyncpg driver, regardless of what's in .env / CI secret."""
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return url
+
+
 engine = create_async_engine(
-    settings.database_url,
+    _get_async_url(settings.database_url),
     echo=settings.app_env == "development",
 )
 
