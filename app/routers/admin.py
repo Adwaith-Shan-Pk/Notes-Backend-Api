@@ -32,12 +32,7 @@ async def list_all_notes(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_admin),
 ):
-    """
-    **Admin only.** Return a paginated list of all notes from every user.
 
-    - Supports the same search/sort/pagination params as `GET /api/notes`
-    - Returns 403 if the caller does not have the `admin` role
-    """
     return await admin_service.get_all_notes(db, page, limit, search, sort_by, order)
 
 
@@ -52,13 +47,6 @@ async def delete_any_note(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_admin),
 ):
-    """
-    **Admin only.** Permanently delete any note regardless of which user owns it.
-
-    - Returns 204 on success
-    - Returns 404 if the note does not exist
-    - Returns 403 if the caller is not an admin
-    """
     await admin_service.admin_delete_note(db, note_id)
 
 
@@ -74,12 +62,9 @@ async def list_all_users(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_admin),
 ):
-    """
-    **Admin only.** Return a paginated list of all registered users.
-
-    - Password hashes are never included in the response
-    - Returns 403 if the caller is not an admin
-    """
+    result = await admin_service.get_all_users(db, page, limit)
+    result["data"] = [UserResponse.model_validate(u) for u in result["data"]]
+    return result
     result = await admin_service.get_all_users(db, page, limit)
     result["data"] = [UserResponse.model_validate(u) for u in result["data"]]
     return result

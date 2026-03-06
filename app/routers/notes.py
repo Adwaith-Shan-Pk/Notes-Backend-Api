@@ -28,13 +28,6 @@ async def create_note(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Create a new note for the authenticated user.
-
-    - **title**: 1–255 characters
-    - **content**: at least 1 character
-    - `user_id` is set automatically from the JWT — cannot be overridden
-    """
     return await notes_service.create_note(db, data, current_user.id)
 
 
@@ -53,14 +46,7 @@ async def list_notes(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    List all notes belonging to the authenticated user with pagination and optional search.
-
-    - **search**: filters by title using ILIKE (case-insensitive, partial match)
-    - **sort_by**: one of `created_at`, `updated_at`, `title`
-    - **order**: `asc` or `desc`
-    - Results only include the current user's own notes
-    """
+ 
     return await notes_service.list_notes(
         db, current_user.id, page, limit, search, sort_by, order
     )
@@ -77,11 +63,7 @@ async def get_note(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Retrieve a single note by ID.
 
-    - Returns 404 if the note does not exist **or** belongs to another user (ownership is not revealed)
-    """
     return await notes_service.get_note_for_user(db, note_id, current_user.id)
 
 
@@ -97,11 +79,7 @@ async def update_note(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Partially update a note. All fields are optional — only provided fields are updated.
 
-    - Returns 404 if the note does not exist or belongs to another user
-    """
     return await notes_service.update_note(db, note_id, data, current_user.id)
 
 
@@ -116,10 +94,4 @@ async def delete_note(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Permanently delete a note.
-
-    - Returns 204 No Content on success
-    - Returns 404 if the note does not exist or belongs to another user
-    """
-    await notes_service.delete_note(db, note_id, current_user.id)
+    lawait notes_service.delete_note(db, note_id, current_user.id)
