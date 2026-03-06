@@ -1,15 +1,9 @@
 #Full Code Test
 import pytest
-from httpx import AsyncClient, ASGITransport
 from app.main import app
 
 pytestmark = pytest.mark.asyncio
 
-
-@pytest.fixture
-async def client():
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-        yield ac
 
 
 async def _register_and_login(client, email: str, password: str = "securepass123"):

@@ -1,21 +1,15 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
 from app.main import app
 
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture
-async def client():
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-        yield ac
-
 
 @pytest.fixture
 async def registered_user(client):
-    payload = {"email": "test@example.com", "password": "securepass123"}
+    payload = {"email": "authtest@example.com", "password": "securepass123"}
     resp = await client.post("/api/auth/register", json=payload)
-    assert resp.status_code == 201
+    assert resp.status_code in (201, 409)  # 409 = already exists from a prior run
     return payload
 
 
