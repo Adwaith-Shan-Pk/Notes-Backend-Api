@@ -1,6 +1,6 @@
 import secrets
 from datetime import datetime, timedelta, timezone
-
+import bcrypt
 from jose import JWTError, ExpiredSignatureError, jwt
 
 from app.config import settings
