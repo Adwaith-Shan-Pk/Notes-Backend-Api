@@ -18,22 +18,23 @@ def _build_order(sort_by: str, order: str):
 
 
 async def create_note(db: AsyncSession, data: NoteCreate, user_id: UUID) -> Note:
-    note = Note(title=data.title, content=data.content, user_id=user_id)
+    note = Note(title=data.title, content=data.content, user_id=UUID(str(user_id)))
     db.add(note)
     await db.commit()
     await db.refresh(note)
     return note
 
-
 async def get_note_for_user(db: AsyncSession, note_id: UUID, user_id: UUID) -> Note:
     result = await db.execute(
-        select(Note).where(Note.id == note_id, Note.user_id == user_id)
+        select(Note).where(
+            Note.id == UUID(str(note_id)),
+            Note.user_id == UUID(str(user_id))
+        )
     )
     note = result.scalar_one_or_none()
     if not note:
         raise AppException(404, "NOTE_NOT_FOUND", "Note not found")
     return note
-
 
 async def list_notes(
     db: AsyncSession,
@@ -50,7 +51,8 @@ async def list_notes(
         raise AppException(400, "VALIDATION_ERROR", "order must be 'asc' or 'desc'")
 
     offset = (page - 1) * limit
-    base_filter = [Note.user_id == user_id]
+    base_filter = [Note.user_id == UUID(str(user_id))]
+
     if search:
         base_filter.append(Note.title.ilike(f"%{search}%"))
 

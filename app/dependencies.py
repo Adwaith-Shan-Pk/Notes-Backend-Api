@@ -2,6 +2,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from uuid import UUID
 
 from app.database import AsyncSessionLocal
 from app.models.user import User
@@ -23,13 +24,18 @@ async def get_current_user(
     if not token:
         raise AppException(401, "TOKEN_MISSING", "Authorization token is required")
 
-    payload = decode_access_token(token)  # raises TOKEN_EXPIRED or TOKEN_INVALID
+    payload = decode_access_token(token)
 
     user_id = payload.get("sub")
     if not user_id:
         raise AppException(401, "TOKEN_INVALID", "Token payload is malformed")
 
-    result = await db.execute(select(User).where(User.id == user_id))
+    try:
+        user_uuid = UUID(user_id)
+    except (ValueError, AttributeError):
+        raise AppException(401, "TOKEN_INVALID", "Invalid user ID in token")
+
+    result = await db.execute(select(User).where(User.id == user_uuid))
     user = result.scalar_one_or_none()
     if not user:
         raise AppException(401, "TOKEN_INVALID", "User no longer exists")

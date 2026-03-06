@@ -58,7 +58,7 @@ async def get_all_notes(
 
 
 async def admin_delete_note(db: AsyncSession, note_id: UUID) -> None:
-    result = await db.execute(select(Note).where(Note.id == note_id))
+    result = await db.execute(select(Note).where(Note.id == UUID(str(note_id))))
     note = result.scalar_one_or_none()
     if not note:
         raise AppException(404, "NOTE_NOT_FOUND", "Note not found")
