@@ -5,6 +5,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     region: oregon
+    port: 8000 
     plan: free
 
     healthCheckPath: /health
