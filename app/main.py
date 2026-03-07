@@ -4,8 +4,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from sqlalchemy import text
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.exceptions import (
     AppException,
@@ -20,6 +24,9 @@ from app.routers import auth, notes, admin
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
+
+
+limiter = Limiter(key_func=get_remote_address)
 
 
 app = FastAPI(
@@ -45,6 +52,8 @@ app = FastAPI(
     ],
 )
 
+app.state.limiter = limiter
+
 
 # X-Request-ID middleware 
 @app.middleware("http")
@@ -56,7 +65,6 @@ async def request_id_middleware(request: Request, call_next):
     return response
 
 
-# Request body size limit (1 MB)     
 @app.middleware("http")
 async def limit_body_size(request: Request, call_next):
     max_size = 1 * 1024 * 1024  # 1 MB
@@ -70,6 +78,8 @@ async def limit_body_size(request: Request, call_next):
     return await call_next(request)
 
 
+app.add_middleware(SlowAPIMiddleware)
+
 # CORS 
 app.add_middleware(
     CORSMiddleware,
@@ -80,6 +90,7 @@ app.add_middleware(
 )
 
 # Exception handlers 
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_exception_handler(AppException, app_exception_handler)
 app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
