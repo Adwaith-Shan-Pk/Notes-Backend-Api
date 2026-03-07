@@ -18,7 +18,9 @@ def _get_async_url(url: str) -> str:
 engine = create_async_engine(
     _get_async_url(settings.database_url),
     echo=settings.app_env == "development",
-    connect_args={"statement_cache_size": 0}
+    connect_args={"statement_cache_size": 0,
+    "prepared_statement_cache_size": 0,
+    }
 )
 
 AsyncSessionLocal = async_sessionmaker(
