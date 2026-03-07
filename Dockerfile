@@ -22,4 +22,5 @@ RUN chmod +x scripts/start.sh
 
 EXPOSE 8000
 
-CMD ["scripts/start.sh"]
+CMD ["/bin/sh", "scripts/start.sh"]
+
