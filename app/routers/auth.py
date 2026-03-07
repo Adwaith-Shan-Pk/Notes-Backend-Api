@@ -5,7 +5,7 @@ from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, Refre
 from app.schemas.user import UserResponse
 from app.services import auth_service
 from app.dependencies import get_db
-from app.main import limiter
+from app.core.limiter import limiter
 
 router = APIRouter()
 
@@ -35,10 +35,6 @@ async def register(request: Request, data: RegisterRequest, db: AsyncSession = D
 )
 @limiter.limit("10/minute")
 async def login(request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)):
-    """
-    - Returns an access token(15 min) and a refresh token(7 days)
-    - The same error is returned for wrong email or wrong password to prevent user enumeration
-    """
     return await auth_service.login_user(db, data)
 
 

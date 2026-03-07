@@ -6,10 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+
+from app.core.limiter import limiter
 
 from app.core.exceptions import (
     AppException,
@@ -25,8 +26,6 @@ from app.routers import auth, notes, admin
 async def lifespan(app: FastAPI):
     yield
 
-
-limiter = Limiter(key_func=get_remote_address)
 
 
 app = FastAPI(
