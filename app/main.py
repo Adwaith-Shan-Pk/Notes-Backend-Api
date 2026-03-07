@@ -36,6 +36,7 @@ app = FastAPI(
     ),
     version="1.0.0",
     lifespan=lifespan,
+    redoc_url=None,
     openapi_tags=[
         {"name": "Authentication", "description": "Register, login, and refresh JWT tokens"},
         {"name": "Notes", "description": "Create and manage your personal notes"},

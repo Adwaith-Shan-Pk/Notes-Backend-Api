@@ -5,7 +5,7 @@ A fully functional REST API for managing personal notes, built with **FastAPI**,
 ---
 
 ## Table of Contents
-
+- [Live Demo](#live-demo)
 - [Prerequisites](#prerequisites)
 - [Local Setup](#local-setup)
 - [Docker Setup](#docker-setup)
@@ -14,6 +14,17 @@ A fully functional REST API for managing personal notes, built with **FastAPI**,
 - [Example Requests](#example-requests)
 - [Creating an Admin User](#creating-an-admin-user)
 - [Troubleshooting](#troubleshooting)
+
+
+---
+## Live Demo
+
+A hosted instance is available at **https://notes-api.shan.is-a.dev**
+
+- Swagger UI: **https://notes-api.shan.is-a.dev/docs**
+
+> ⚠️ The API is hosted on Render's free tier and may take **30–60 seconds to respond** on the first request after a period of inactivity (cold start). Subsequent requests will be fast.
+
 
 ---
 
@@ -54,7 +65,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 API is now running at **http://localhost:8000**
 - Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
 
 ---
 
