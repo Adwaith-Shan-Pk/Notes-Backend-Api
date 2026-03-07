@@ -19,8 +19,6 @@ from app.routers import auth, notes, admin
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AsyncSessionLocal() as session:
-        await session.execute(text("SELECT 1"))
     yield
 
 
